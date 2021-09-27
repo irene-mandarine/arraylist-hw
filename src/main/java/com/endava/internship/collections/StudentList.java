@@ -43,7 +43,7 @@ public class StudentList implements List<Student>, Iterable<Student> {
     public boolean contains(Object o) {
         for (int i = 0; i < size; i++) {
             if (o == null || studentArray[i] == null) {
-                if (studentArray[i] == null) {
+                if (studentArray[i] == o) {
                     return true;
                 }
             } else {
@@ -223,7 +223,7 @@ public class StudentList implements List<Student>, Iterable<Student> {
 
     @Override
     public int lastIndexOf(Object o) {
-        for (int i = size; i >= 0; i--) {
+        for (int i = (size - 1); i >= 0; i--) {
             if (o == null || studentArray[i] == null) {
                 if (o == studentArray[i]) {
                     return i;
@@ -237,9 +237,9 @@ public class StudentList implements List<Student>, Iterable<Student> {
         return -1;
     }
 
-    private class ListIter implements ListIterator<Student> {
+    class ListIter implements ListIterator<Student> {
 
-        private int cursor;
+        private int cursor = 0;
 
         public ListIter() {
         }
@@ -277,7 +277,7 @@ public class StudentList implements List<Student>, Iterable<Student> {
             if (cursor == size) {
                 return -1;
             }
-            return cursor;
+            return cursor + 1;
         }
 
         @Override
@@ -285,7 +285,7 @@ public class StudentList implements List<Student>, Iterable<Student> {
             if (cursor == 0) {
                 return -1;
             }
-            return cursor;
+            return cursor - 1;
         }
 
         @Override
@@ -303,12 +303,10 @@ public class StudentList implements List<Student>, Iterable<Student> {
 
         @Override
         public void add(Student student) {
-            if (size == 10) {
+            if (size >= (studentArray.length * 0.75)) {
                 increaseCapacity();
             }
-
             Student[] newArray = new Student[size + 1];
-
             for (int i = 0; i < newArray.length; i++) {
                 if (i < cursor) {
                     newArray[i] = studentArray[i];
@@ -321,7 +319,6 @@ public class StudentList implements List<Student>, Iterable<Student> {
             studentArray = newArray;
             size++;
         }
-
     }
 
     @Override
@@ -351,15 +348,9 @@ public class StudentList implements List<Student>, Iterable<Student> {
 
     @Override
     public boolean addAll(Collection<? extends Student> collection) {
-        int newCapacity = studentArray.length + collection.size();
-        Student[] newStudentArray = new Student[newCapacity];
-        for (int i = 0; i < size; i++) {
-            newStudentArray[i] = studentArray[i];
+        for (Student s : collection) {
+            add(s);
         }
-        for (int j = 0; j < collection.size(); j++) {
-            newStudentArray[j + size] = get(j);
-        }
-        studentArray = newStudentArray;
         return true;
     }
 
