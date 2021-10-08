@@ -1,13 +1,13 @@
 package com.endava.internship.collections;
 
-import com.sun.istack.internal.NotNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 
 /**
  * The class that defines the element that will be contained by your collection
  */
-public class Student //TODO consider implementing any interfaces necessary for your collection
+public class Student
 {
     private String name;
     private LocalDate dateOfBirth;

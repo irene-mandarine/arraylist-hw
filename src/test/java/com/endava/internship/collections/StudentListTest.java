@@ -22,7 +22,7 @@ class StudentListTest {
     Student st5 = new Student("Stas", LocalDate.of(1995, 2, 1), "student");
 
     @BeforeEach
-    void CreateStudentList() {
+    void createStudentList() {
         studentList = new StudentList();
     }
 
@@ -60,7 +60,7 @@ class StudentListTest {
     }
 
     @Test
-    void testAddMethod() {
+    void testAdd() {
         studentList.add(st1);
 
         assertAll(
@@ -72,7 +72,7 @@ class StudentListTest {
     }
 
     @Test
-    void testAddMethodResizeOption() {
+    void testAddResizeOption() {
         addThreeStudents();
         addThreeStudents();
         addThreeStudents();
@@ -117,7 +117,7 @@ class StudentListTest {
     }
 
     @Test
-    void testGetMethod() {
+    void testGet() {
         studentList.add(st3);
 
         assertThat(studentList.get(0)).isNotNull();
@@ -128,7 +128,7 @@ class StudentListTest {
     }
 
     @Test
-    void testSetMethod() {
+    void testSet() {
         addTheSameStudentFourTimes();
         studentList.set(2, st2);
 
@@ -139,7 +139,7 @@ class StudentListTest {
     }
 
     @Test
-    void testAddByIndexMethod() {
+    void testAddByIndex() {
         addTheSameStudentFourTimes();
         addTheSameStudentFourTimes();
         studentList.add(2, st2);
@@ -152,7 +152,7 @@ class StudentListTest {
     }
 
     @Test
-    void testContainsMethod() {
+    void testContains() {
         studentList.add(null);
         addThreeStudents();
 
@@ -162,7 +162,7 @@ class StudentListTest {
     }
 
     @Test
-    void testIndexOfMethod() {
+    void testIndexOf() {
         addThreeStudents();
 
         assertThat(studentList.indexOf(st1)).isEqualTo(0);
@@ -170,7 +170,7 @@ class StudentListTest {
     }
 
     @Test
-    void testLastIndexOfMethod() {
+    void testLastIndexOf() {
         addThreeStudents();
         addTheSameStudentFourTimes();
         addThreeStudents();
@@ -266,7 +266,7 @@ class StudentListTest {
     }
 
     @Test
-    void testListIteratorRemoveAddSetMethods() {
+    void testListIteratorRemoveAddSet() {
         addTheSameStudentFourTimes();
         ListIterator<Student> listIterator = studentList.listIterator();
         listIterator.next();
