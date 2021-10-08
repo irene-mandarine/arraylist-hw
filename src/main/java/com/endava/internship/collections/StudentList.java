@@ -1,31 +1,33 @@
 package com.endava.internship.collections;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
-public class StudentList implements List<Student>, Iterable<Student> {
+public class StudentList<E> implements List<E>, Iterable<E> {
     private int size = 0;
 
-    Student[] studentArray;
+    E[] studentArray;
 
+    @SuppressWarnings("unchecked")
     public StudentList(int initialCapacity) {
         if (initialCapacity >= 0) {
-            this.studentArray = new Student[initialCapacity];
+            this.studentArray = (E[]) new Object[initialCapacity];
         } else {
             throw new IndexOutOfBoundsException("Capacity cannot be negative!");
         }
     }
 
+    @SuppressWarnings("unchecked")
     public StudentList() {
-        this.studentArray = new Student[10];
+        this.studentArray = (E[]) new Object[10];
     }
 
+    @SuppressWarnings("unchecked")
     private void increaseCapacity() {
         int oldCapacity = studentArray.length;
         int newCapacity = oldCapacity * 2;
-        Student[] newStudentArray = new Student[newCapacity];
-        for (int i = 0; i < size; i++) {
-            newStudentArray[i] = studentArray[i];
-        }
+        E[] newStudentArray = (E[]) new Object[newCapacity];
+        IntStream.range(0, size).forEach(i -> newStudentArray[i] = studentArray[i]);
         studentArray = newStudentArray;
     }
 
@@ -41,26 +43,15 @@ public class StudentList implements List<Student>, Iterable<Student> {
 
     @Override
     public boolean contains(Object o) {
-        for (int i = 0; i < size; i++) {
-            if (o == null || studentArray[i] == null) {
-                if (studentArray[i] == o) {
-                    return true;
-                }
-            } else {
-                if (studentArray[i].equals(o)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return Arrays.stream(studentArray).anyMatch(e -> Objects.equals(o, e));
     }
 
     @Override
-    public Iterator<Student> iterator() {
+    public Iterator<E> iterator() {
         return new Iter();
     }
 
-    private class Iter implements Iterator<Student> {
+    private class Iter implements Iterator<E> {
 
         int cursor = 0;
 
@@ -70,11 +61,11 @@ public class StudentList implements List<Student>, Iterable<Student> {
         }
 
         @Override
-        public Student next() {
+        public E next() {
             if (cursor >= size) {
                 throw new NoSuchElementException();
             }
-            Student student = studentArray[cursor];
+            E student = studentArray[cursor];
             cursor++;
             return student;
         }
@@ -84,19 +75,15 @@ public class StudentList implements List<Student>, Iterable<Student> {
             if (size == 0) {
                 throw new IllegalStateException();
             }
-            for (int i = cursor - 1; i < size - 1; i++) {
-                studentArray[i] = studentArray[i + 1];
-            }
+            IntStream.range(0, size - 1).forEach(i -> studentArray[i] = studentArray[i + 1]);
             size--;
         }
     }
 
     @Override
     public Object[] toArray() {
-        Student[] newArray = new Student[size];
-        for (int i = 0; i < size; i++) {
-            newArray[i] = studentArray[i];
-        }
+        Object[] newArray = new Object[size];
+        IntStream.range(0, size).forEach(i -> newArray[i] = studentArray[i]);
         return newArray;
     }
 
@@ -104,15 +91,13 @@ public class StudentList implements List<Student>, Iterable<Student> {
     public <T> T[] toArray(T[] ts) {
         int newSize = Math.min(size, ts.length);
         if (newSize > 0) {
-            for (int i = 0; i < newSize; i++) {
-                ts[i] = (T) studentArray[i];
-            }
+            IntStream.range(0, newSize).forEach(i -> ts[i] = (T) studentArray[i]);
         }
         return ts;
     }
 
     @Override
-    public boolean add(Student student) {
+    public boolean add(E student) {
         if (size >= (studentArray.length * 0.75)) {
             increaseCapacity();
         }
@@ -148,14 +133,12 @@ public class StudentList implements List<Student>, Iterable<Student> {
 
     @Override
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            studentArray[i] = null;
-        }
+        IntStream.range(0, size).forEach(i -> studentArray[i] = null);
         size = 0;
     }
 
     @Override
-    public Student get(int i) {
+    public E get(int i) {
         if (i < size) {
             return studentArray[i];
         } else {
@@ -164,7 +147,7 @@ public class StudentList implements List<Student>, Iterable<Student> {
     }
 
     @Override
-    public Student set(int i, Student student) {
+    public E set(int i, E student) {
         if (i < size) {
             studentArray[i] = student;
             return studentArray[i];
@@ -174,12 +157,12 @@ public class StudentList implements List<Student>, Iterable<Student> {
     }
 
     @Override
-    public void add(int i, Student student) {
+    public void add(int i, E student) {
         if (i < size) {
             if (size >= (studentArray.length * 0.75)) {
                 increaseCapacity();
             }
-            Student[] tempSt;
+            E[] tempSt;
             tempSt = studentArray;
             studentArray[i] = student;
             for (int j = i; j <= size; j++) {
@@ -192,9 +175,9 @@ public class StudentList implements List<Student>, Iterable<Student> {
     }
 
     @Override
-    public Student remove(int i) {
+    public E remove(int i) {
         if (i < size) {
-            Student tmp = studentArray[i];
+            E tmp = studentArray[i];
             for (int j = i; j < size; ) {
                 studentArray[i++] = studentArray[++j];
             }
@@ -237,7 +220,7 @@ public class StudentList implements List<Student>, Iterable<Student> {
         return -1;
     }
 
-    class ListIter implements ListIterator<Student> {
+    class ListIter implements ListIterator<E> {
 
         private int cursor = 0;
 
@@ -254,8 +237,8 @@ public class StudentList implements List<Student>, Iterable<Student> {
         }
 
         @Override
-        public Student next() {
-            Student student = studentArray[cursor];
+        public E next() {
+            E student = studentArray[cursor];
             cursor++;
             return student;
         }
@@ -266,8 +249,8 @@ public class StudentList implements List<Student>, Iterable<Student> {
         }
 
         @Override
-        public Student previous() {
-            Student student = studentArray[cursor - 1];
+        public E previous() {
+            E student = studentArray[cursor - 1];
             cursor--;
             return student;
         }
@@ -290,23 +273,22 @@ public class StudentList implements List<Student>, Iterable<Student> {
 
         @Override
         public void remove() {
-            for (int i = cursor - 1; i <= size - 1; i++) {
-                studentArray[i] = studentArray[i + 1];
-            }
+            IntStream.range(0, cursor - 1).forEach(i -> studentArray[i] = studentArray[i + 1]);
             size--;
         }
 
         @Override
-        public void set(Student student) {
+        public void set(E student) {
             studentArray[cursor] = student;
         }
 
         @Override
-        public void add(Student student) {
+        @SuppressWarnings("unchecked")
+        public void add(E student) {
             if (size >= (studentArray.length * 0.75)) {
                 increaseCapacity();
             }
-            Student[] newArray = new Student[size + 1];
+            E[] newArray = (E[]) new Object[size + 1];
             for (int i = 0; i < newArray.length; i++) {
                 if (i < cursor) {
                     newArray[i] = studentArray[i];
@@ -319,22 +301,23 @@ public class StudentList implements List<Student>, Iterable<Student> {
             studentArray = newArray;
             size++;
         }
+
     }
 
     @Override
-    public ListIterator<Student> listIterator() {
+    public ListIterator<E> listIterator() {
         return new ListIter();
     }
 
     @Override
-    public ListIterator<Student> listIterator(int i) {
+    public ListIterator<E> listIterator(int i) {
         return new ListIter(i);
     }
 
     @Override
-    public List<Student> subList(int i, int i1) {
+    public List<E> subList(int i, int i1) {
         if (i < size && i1 <= size) {
-            List<Student> newStudentList = new StudentList();
+            List<E> newStudentList = new StudentList();
             for (int c = i; c <= i1; c++) {
                 newStudentList.add(studentArray[c]);
             }
@@ -347,8 +330,8 @@ public class StudentList implements List<Student>, Iterable<Student> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends Student> collection) {
-        for (Student s : collection) {
+    public boolean addAll(Collection<? extends E> collection) {
+        for (E s : collection) {
             add(s);
         }
         return true;
@@ -361,7 +344,7 @@ public class StudentList implements List<Student>, Iterable<Student> {
     }
 
     @Override
-    public boolean addAll(int i, Collection<? extends Student> collection) {
+    public boolean addAll(int i, Collection<? extends E> collection) {
         //Ignore this for homework
         throw new UnsupportedOperationException();
     }
